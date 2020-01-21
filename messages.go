@@ -108,6 +108,18 @@ func (m *MessageService) SendMessage(from string, to string, body string, mediaU
 	return m.Create(context.Background(), v)
 }
 
+// SendMessage sends an outbound Message with the given body or mediaURLs. and return webhook
+func (m *MessageService) SendMessageWebhook(from string, to string, body string, webhook string, mediaURLs []*url.URL) (*Message, error) {
+	v := url.Values{}
+	v.Set("Body", body)
+	v.Set("StatusCallback", webhook)
+	v.Set("From", from)
+	v.Set("To", to)
+	for _, mediaURL := range mediaURLs {
+		v.Add("MediaUrl", mediaURL.String())
+	}
+	return m.Create(context.Background(), v)
+}
 // MessagePageIterator lets you retrieve consecutive pages of resources.
 type MessagePageIterator interface {
 	// Next returns the next page of resources. If there are no more resources,
